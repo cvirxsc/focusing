@@ -34,16 +34,18 @@ class ImageSubscriber(Node):
         structdis_2 = structdis_1 / np.max(structdis_1)
         gray_img = np.array(structdis_2 * 255).astype('uint8')
         
-        h = gray_img.shape[0]
-        w = gray_img.shape[1]
-        # 遍历灰度层
-        for i in range(h):
-            for j in range(w):
-                if gray_img[i][j]<130:
-                    gray_img[i][j] = 0
-                else:
-                    gray_img[i][j] = 255
-        self.contours, hierarchy = cv2.findContours(gray_img, cv2.RETR_LIST, 2)
+        _, thresh = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+#         h = gray_img.shape[0]
+#         w = gray_img.shape[1]
+#         # 遍历灰度层
+#         for i in range(h):
+#             for j in range(w):
+#                 if gray_img[i][j]<130:
+#                     gray_img[i][j] = 0
+#                 else:
+#                     gray_img[i][j] = 255
+#         self.contours, hierarchy = cv2.findContours(gray_img, cv2.RETR_LIST, 2)
+        self.contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, 2)
 
     def listener_callback(self, data):
         self.get_logger().info('Receiving video frame')         # 输出日志信息，提示已进入回调函数
